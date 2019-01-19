@@ -1,0 +1,92 @@
+{{!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 collapse navbar-collapse">
+  <a class="navbar-brand" href="/">Article Scrapper</a>
+  <a class="navbar-brand" href="/">Home</a>
+</nav> --}}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <a class="navbar-brand" href="/">Article Scrapper</a>
+  <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/saved">Saved Article</a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-success nav-link scrap-new" href="/">Scrap New Article</a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-danger nav-link" id="clear" href="/">Clear Articles!</a>
+      </li>
+      </ul>
+  </div>
+</nav>
+
+
+{{!-- <div class="jumbotron text-center">
+  <h2>Mongo Scrapper</h2>
+</div> --}}
+
+<div class="jumbotron text-center">
+  <div class="overlay">
+  </div>
+  <div class="background-image">
+  </div>
+  <div class="caption">
+    <h1>Mongo Scraper</h1>
+    <p>New York Times Edition</p>
+  </div>
+</div>
+
+
+{{!--Main Content Container --}}
+{{!-- <div id="content-div">
+{{#each article}}
+<h3>{{title}}</h3>
+<p>{{link}}</p>
+<p>{{description}}</p>
+{{/each}}
+</div> --}}
+
+{{!-- <div class = "container-fulid article-container"id="content-div">
+<ul>
+  {{#each article}}
+    <li>
+      <h3>{{title}}</h3>
+      <p>{{link}}</p>
+      <p>{{description}}</p>
+    </li>
+  {{/each}}
+</ul>
+</div> --}}
+
+
+<div class="container-fluid article-container">
+{{#if article}}
+   {{#each article}}
+   <div class="card">
+    <div class="card-header">
+     <h3><a class="article-link" target="_blank" rel="noopener noreferrer" href={{link}}>{{title}}</a>
+     <a class="btn btn-success save float-right" data-_id={{_id}}>Save Article</a></h3>
+   </div>
+   <div class="card-body"><p>{{description}}</p></div>
+   </div>
+   {{/each}} 
+{{else}}
+  <div class="card">
+    <div class="card-header">
+    <h3>Uh Oh. Looks like we don't have any new articles.</h3>
+  </div>
+  <div class="card-body"></div>
+  </div>
+{{/if}}
+</div>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{{!------------script for saving a new user --------}}
+<script src="/user.js"></script>
