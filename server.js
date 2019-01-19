@@ -18,14 +18,14 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Configure middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/mongoscrapper", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/mongoscrapper", { useNewUrlParser: true });
 
 // Routes
 
@@ -47,13 +47,12 @@ app.get("/", function(req, res) {
             db.Article.create(result);
     });
     }).then(function(data){
-    //console.log(data);
     var query = db.Article.find({ $where: 'this.description.length > 0' }).limit(10);
     query.exec(function(err, data){
         if (err) { 
            throw err;
         }
-        else if (data.length == 0) {
+        else if (data.length === 0) {
            res.render("index", {article:"Uh Oh. Looks like we don't have any new articles."})
         }else 
         {
@@ -69,11 +68,11 @@ app.get("/", function(req, res) {
 //Route for creating Articles from the db
 app.post("/:id", function(req, res) {
   // TODO: Finish the route so it grabs all of the articles
-  console.log(req.params.id);
+  //console.log(req.params.id);
   db.Article.updateOne({_id: req.params.id}, {$set: {"saved":true}})
   .then(function(dbArticle) {
     // View the added result in the console
-    console.log(dbArticle);
+    //console.log(dbArticle);
   }).catch(function(err){
     console.log(err);
   })
@@ -81,8 +80,9 @@ app.post("/:id", function(req, res) {
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/saved", function(req, res) {
-  db.Article.find({"saved":true}).then(function(dbArticle){
-      console.log(dbArticle);
+  db.Article.find({"saved":true}).populate("note").then(function(dbArticle)
+  {
+      console.log(dbArticle)
       res.render("article", {article:dbArticle})
   }).catch(function(err){
     res.json(err);
@@ -110,30 +110,46 @@ app.get("/delete/:id", function(req, res){
 
 //Delete All Article
 app.get("/clear", function(req, res){
-    console.log("clear button hit in express")
-    db.Article.deleteMany().then(console.log("delete"))
+    db.Article.remove({}, function(err, remove){
+        if(err){
+            console.log(err);
+        }else{
+            console.log(remove)
+        }
+    }).then(function(data){
+         db.Note.remove({}, function(err, removeNote){
+             console.log("note collecton removed")
+         });
+    })
 });
 
+
 // Route for saving/updating an Article's associated Note
-// app.post("/articles/:id", function(req, res) {
-//   // TODO
-//   // ====
-//   // save the new note that gets posted to the Notes collection
-//   // then find an article from the req.params.id
-//   // and update it's "note" property with the _id of the new note
-//   console.log(req.body);
-//   console.log(req.params);
-//   db.Note.create(req.body).then(function(dbNote){
-//     console.log(dbNote._id);
-// //, {new : true} ,{ upsert: true }   {_id:mongojs.ObjectId(req.params.id)},
-//     return db.Article.findeOneAndUpdate({_id:req.params.id}, {note : dbNote._id}, {new : true});
-//   }).then(function(dbArticle){
-//     console.log(dbArticle)
-//      res.json(dbArticle);
-//   }).catch(function(err){
-//      res.json(err);
-//   })
-// });
+app.post("/savenote/:id", function(req, res) {
+  console.log(req.body);
+  console.log(req.params);
+  db.Note.create(req.body).then(function(dbNote){
+    console.log(dbNote._id);
+    console.log(dbNote);
+    //some how not working findeOneAndUpdate({_id:req.params.id},{note : dbNote._id}, {new : true})
+    return db.Article.updateOne({_id:req.params.id},{note : dbNote._id}, {new : true});
+  }).then(function(dbArticle){
+    console.log(dbArticle)
+     //res.json(dbArticle);
+  }).catch(function(err){
+     //res.json(err);
+  })
+});
+
+//Get Note of saved article
+app.get("/note/:id", function(req, res) {
+    db.Article.findOne({_id:req.params.id}).populate("note").then(function(dbArticle)
+    {
+        console.log(dbArticle)
+    }).catch(function(err){
+      console.log(err);
+    })
+  });
 
 // Start the server
 app.listen(PORT, function() {

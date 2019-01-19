@@ -36,33 +36,13 @@
   </div>
   <div class="background-image">
   </div>
-  <div class="caption">
-    <h1>Mongo Scraper</h1>
-    <p>New York Times Edition</p>
+  <div class="caption inner">
+    <h1>Mongo Saved Article</h1>
+    <p>New York Times Saved Article</p>
   </div>
 </div>
 
 
-{{!--Main Content Container --}}
-{{!-- <div id="content-div">
-{{#each article}}
-<h3>{{title}}</h3>
-<p>{{link}}</p>
-<p>{{description}}</p>
-{{/each}}
-</div> --}}
-
-{{!-- <div class = "container-fulid article-container"id="content-div">
-<ul>
-  {{#each article}}
-    <li>
-      <h3>{{title}}</h3>
-      <p>{{link}}</p>
-      <p>{{description}}</p>
-    </li>
-  {{/each}}
-</ul>
-</div> --}}
 
 
 <div class="container-fluid article-container">
@@ -72,11 +52,37 @@
      <div class="card-header">
      <h3><a class="article-link" target="_blank" rel="noopener noreferrer" href={{link}}>{{title}}</a>
      <a class="btn btn-danger delete float-right" data-_id={{_id}}>Delete Article</a>
-     <a class="btn btn-info notes float-right" data-_id={{_id}}>Article Notes</a>
+     <a class="btn btn-info notes float-right" data-_id={{_id}} data-toggle="modal" data-target="#articledata-modal">Article Notes</a>
      </h3>
    </div>
    <div class="card-body"><p>{{description}}</p></div>
    </div>
+   <div id="articledata-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="model-title">{{_id}}</h2>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <label for="notetitle">Title</label>
+          <input type="text" id="notetitle" class="form-control">
+          <br>
+          <label for="notetext">Text</label>
+          <textarea type="textarea" id="notetext" class="form-control"></textarea>
+          <br>
+          <div>
+            <h2>{{note.title}}</h2>
+            <br>
+            <p>{{note.text}}</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-default" data-dismiss="modal" id="notesubmit">Submit</button>
+        </div>
+      </div>
+    </div>
+</div>
    {{/each}} 
 {{else}}
   <div class="card">
@@ -87,6 +93,8 @@
   </div>
 {{/if}}
 </div>
+
+
 
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

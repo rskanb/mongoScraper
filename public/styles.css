@@ -1,0 +1,29 @@
+  
+  .card {
+    margin: 10px;
+    /* background-color: rgb(191, 214, 216); */
+  }
+  
+  .btn {
+    margin-right: 10px;
+  }
+  
+  .jumbotron {
+    position: relative;
+    background: url(./image.png);
+    background-size: cover;
+}
+
+.jumbotron > .overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.jumbotron > .inner {
+    position: relative;
+    z-index: 2;
+}

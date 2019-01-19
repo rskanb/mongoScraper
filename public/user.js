@@ -8,7 +8,6 @@ $(document).ready(function(){
 $(".btn-success").on("click", function(event){
     event.preventDefault();
     var id = $(this).data('_id');
-    console.log(id);
     saveArticle(id);
     $(this).closest(".card").remove();
 });
@@ -36,17 +35,55 @@ $(document).on("click",".delete", function(event){
 //Delete All article
 $("#clear").on("click", function(event){
     event.preventDefault();
-    console.log("clear Button hit");
+    $(".article-container").empty();
     $.ajax({
         method:"GET",
         url:"/clear"
     }).then(function(data){
-        window.location.href = "/"
+        window.location.href="/"
     })
 });
 
+//Display Note
+$(".notes").on("click", function(event){
+    event.preventDefault();
+    id = $(event.target).data('_id')
+    // $("#articledata-modal").modal();
+    $.ajax({
+        method:"GET",
+        url:"/note/"+id,
+    }).then(function(data){
+        window.location.href = "/saved"
+    })
+});
+
+//Add Note
+$("#notesubmit").on("click", function(event){
+    event.preventDefault();
+    //var id = $(this).parent().parent().find("h3").text();
+    var title = $("#notetitle").val();
+    var text= $("#notetext").val();
+    $.ajax({
+        method:"POST",
+        url:"/savenote/"+id,
+        data: {
+            title: $("#notetitle").val(),
+            text: $("#notetext").val()
+        }
+    }).then(function(data){
+        window.location.href = "/saved"
+        $("#notetitle").val("");
+        $("#notetext").val("")
+    })
+});
+//Scrap New Article
 $(".scrap-new").on("click", function(event){
-    window.location.href = "/";
+    $.ajax({
+        method: "GET",
+        url: "/",
+    }).then(function(data){
+        window.location.href = "/";
+    });
 });
 
 
